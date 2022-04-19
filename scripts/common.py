@@ -27,6 +27,7 @@ import time
 
 __all__ = ['sh', 'captureSh', 'Sandbox', 'getDumpstr']
 
+
 def sh(command, bg=False, **kwargs):
     """Execute a local command."""
 
@@ -35,6 +36,7 @@ def sh(command, bg=False, **kwargs):
         return subprocess.Popen(command, **kwargs)
     else:
         subprocess.check_call(command, **kwargs)
+
 
 def captureSh(command, **kwargs):
     """Execute a local command and capture its output."""
@@ -45,10 +47,11 @@ def captureSh(command, **kwargs):
     output = p.communicate()[0]
     if p.returncode:
         raise subprocess.CalledProcessError(p.returncode, command)
-    if output.count('\n') and output[-1] == '\n':
+    if b'\n' in output and output[-1] == '\n':
         return output[:-1]
     else:
         return output
+
 
 class Sandbox(object):
     """A context manager for launching and cleaning up remote processes."""
@@ -77,10 +80,7 @@ class Sandbox(object):
             sonce = ''.join([chr(random.choice(range(ord('a'), ord('z'))))
                              for c in range(8)])
             # Assumes scripts are at same path on remote machine
-            sh_command = ['ssh', host,
-                          '%s/regexec' % scripts_path, sonce,
-                          os.getcwd(), "'%s'" % command]
-            p = subprocess.Popen(sh_command, **kwargs)
+            p = subprocess.Popen(command, shell=True, stderr=subprocess.DEVNULL)
             process = self.Process(host, command, kwargs, sonce,
                                    p, ignoreFailures)
             self.processes.append(process)
@@ -97,9 +97,9 @@ class Sandbox(object):
         @param process: A Process corresponding to the command to kill which
                         was created with rsh().
         """
-        killer = subprocess.Popen(['ssh', process.host,
-                                   '%s/killpid' % scripts_path,
-                                    process.sonce])
+        killer = subprocess.Popen('killall LogCabin', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        benchmark = subprocess.Popen('killall Benchmark', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        benchmark.wait()
         killer.wait()
         try:
             process.proc.kill()
@@ -110,7 +110,8 @@ class Sandbox(object):
 
     def restart(self, process):
         self.kill(process)
-        self.rsh(process.host, process.command, process.ignoreFailures, True, **process.kwargs)
+        self.rsh(process.host, process.command,
+                 process.ignoreFailures, True, **process.kwargs)
 
     def __enter__(self):
         return self
@@ -120,9 +121,8 @@ class Sandbox(object):
             killers = []
             for p in self.processes:
                 # Assumes scripts are at same path on remote machine
-                killers.append(subprocess.Popen(['ssh', p.host,
-                                                 '%s/killpid' % scripts_path,
-                                                 p.sonce]))
+                killers.append(subprocess.Popen('killall LogCabin', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
+                killers.append(subprocess.Popen('killall Benchmark', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
             for killer in killers:
                 killer.wait()
         # a half-assed attempt to clean up zombies
@@ -139,18 +139,20 @@ class Sandbox(object):
             if (p.ignoreFailures == False):
                 rc = p.proc.poll()
                 if rc is not None and rc != 0:
-                    print ('Process exited with status %d (%s)' %
-                           (rc, p.command))
+                    print('Process exited with status %d (%s)' %
+                          (rc, p.command))
                     raise subprocess.CalledProcessError(rc, p.command)
+
 
 @contextlib.contextmanager
 def delayedInterrupts():
     """Block SIGINT and SIGTERM temporarily."""
     quit = []
+
     def delay(sig, frame):
         if quit:
-            print ('Ctrl-C: Quitting during delayed interrupts section ' +
-                   'because user insisted')
+            print('Ctrl-C: Quitting during delayed interrupts section ' +
+                  'because user insisted')
             raise KeyboardInterrupt
         else:
             quit.append((sig, frame))
@@ -166,11 +168,13 @@ def delayedInterrupts():
             raise KeyboardInterrupt(
                 'Signal received while in delayed interrupts section')
 
+
 # This stuff has to be here, rather than at the beginning of the file,
 # because config needs some of the functions defined above.
 from config import *
 import config
 __all__.extend(config.__all__)
+
 
 def getDumpstr():
     """Returns an instance of Dumpstr for uploading reports.
@@ -186,6 +190,7 @@ def getDumpstr():
         url = config.dumpstr_base_url
     except AttributeError:
         d = Dumpstr("")
+
         def error(*args, **kwargs):
             raise Exception(
                 "You did not set your dumpstr_base_url "

@@ -58,12 +58,13 @@ def main():
     cluster_uuid = ''.join([random.choice(alphabet) for i in range(8)])
     with Sandbox() as sandbox:
         sh('rm -rf smoketeststorage/')
+        sh('rm -rf storage/')
         sh('rm -f debug/*')
         sh('mkdir -p debug')
 
         for server_id in server_ids:
             host = smokehosts[server_id - 1]
-            with open('smoketest-%d.conf' % server_id, 'w') as f:
+            with open('logcabin-%d.conf' % server_id, 'w') as f:
                 f.write('serverId = %d\n' % server_id)
                 f.write('listenAddresses = %s\n' % host[0])
                 f.write('clusterUUID = %s\n' % cluster_uuid)
@@ -77,14 +78,14 @@ def main():
 
         print('Initializing first server\'s log')
         sandbox.rsh(smokehosts[0][0],
-                    '%s --bootstrap --config smoketest-%d.conf' %
+                    '%s --bootstrap --config logcabin-%d.conf' %
                     (server_command, server_ids[0]),
                    stderr=open('debug/bootstrap', 'w'))
         print()
 
         for server_id in server_ids:
             host = smokehosts[server_id - 1]
-            command = ('%s --config smoketest-%d.conf' %
+            command = ('%s --config logcabin-%d.conf' %
                        (server_command, server_id))
             print('Starting %s on %s' % (command, host[0]))
             sandbox.rsh(host[0], command, bg=True,
@@ -98,17 +99,22 @@ def main():
             ' '.join([h[0] for h in smokehosts[:num_servers]])))
 
         print('Starting %s %s on localhost' % (client_command, cluster))
-        client = sandbox.rsh('localhost',
-                             '%s %s' % (client_command, cluster),
-                             bg=True,
-                             stderr=open('debug/client', 'w'))
+        rps = 5
+        writers = 5
+        while rps <= 120:
+            rps_command = '--rps %s' % rps
+            writers_command = '--threads %s' % writers
+            client = sandbox.rsh('localhost', '%s %s %s %s' % (client_command, cluster, rps_command, writers_command),
+                                bg=True,
+                                stderr=open('debug/client', 'w'))
+            rps += 5
 
-        start = time.time()
-        while client.proc.returncode is None:
-            sandbox.checkFailures()
-            time.sleep(.1)
-            if time.time() - start > timeout:
-                raise Exception('timeout exceeded')
+            start = time.time()
+            while client.proc.returncode is None:
+                sandbox.checkFailures()
+                time.sleep(.1)
+                if time.time() - start > timeout:
+                    raise Exception('timeout exceeded')
 
 if __name__ == '__main__':
     main()

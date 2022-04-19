@@ -36,48 +36,45 @@
 #include <LogCabin/Debug.h>
 #include <LogCabin/Util.h>
 
-namespace {
+namespace
+{
 
-using LogCabin::Client::Cluster;
-using LogCabin::Client::Result;
-using LogCabin::Client::Status;
-using LogCabin::Client::Tree;
-using LogCabin::Client::Util::parseNonNegativeDuration;
+    using LogCabin::Client::Cluster;
+    using LogCabin::Client::Result;
+    using LogCabin::Client::Status;
+    using LogCabin::Client::Tree;
+    using LogCabin::Client::Util::parseNonNegativeDuration;
 
-/**
- * Parses argv for the main function.
- */
-class OptionParser {
-  public:
-    OptionParser(int& argc, char**& argv)
-        : argc(argc)
-        , argv(argv)
-        , cluster("logcabin:5254")
-        , logPolicy("")
-        , size(1024)
-        , writers(1)
-        , totalWrites(1000)
-        , timeout(parseNonNegativeDuration("30s"))
+    /**
+     * Parses argv for the main function.
+     */
+    class OptionParser
     {
-        while (true) {
-            static struct option longOptions[] = {
-               {"cluster",  required_argument, NULL, 'c'},
-               {"help",  no_argument, NULL, 'h'},
-               {"size",  required_argument, NULL, 's'},
-               {"threads",  required_argument, NULL, 't'},
-               {"timeout",  required_argument, NULL, 'd'},
-               {"writes",  required_argument, NULL, 'w'},
-               {"verbose",  no_argument, NULL, 'v'},
-               {"verbosity",  required_argument, NULL, 256},
-               {0, 0, 0, 0}
-            };
-            int c = getopt_long(argc, argv, "c:hs:t:w:v", longOptions, NULL);
+    public:
+        OptionParser(int &argc, char **&argv)
+            : argc(argc), argv(argv), cluster("logcabin:5254"), logPolicy(""), size(10), writers(25), totalWrites(100000), timeout(parseNonNegativeDuration("30s")), rps(50)
+        {
+            while (true)
+            {
+                static struct option longOptions[] = {
+                    {"cluster", required_argument, NULL, 'c'},
+                    {"help", no_argument, NULL, 'h'},
+                    {"size", required_argument, NULL, 's'},
+                    {"threads", required_argument, NULL, 't'},
+                    {"timeout", required_argument, NULL, 'd'},
+                    {"writes", required_argument, NULL, 'w'},
+                    {"rps", required_argument, NULL, 'r'},
+                    {"verbose", no_argument, NULL, 'v'},
+                    {"verbosity", required_argument, NULL, 256},
+                    {0, 0, 0, 0}};
+                int c = getopt_long(argc, argv, "c:hs:t:w:v", longOptions, NULL);
 
-            // Detect the end of the options.
-            if (c == -1)
-                break;
+                // Detect the end of the options.
+                if (c == -1)
+                    break;
 
-            switch (c) {
+                switch (c)
+                {
                 case 'c':
                     cluster = optarg;
                     break;
@@ -96,6 +93,9 @@ class OptionParser {
                 case 'w':
                     totalWrites = uint64_t(atol(optarg));
                     break;
+                case 'r':
+                    rps = uint64_t(atol(optarg));
+                    break;
                 case 'v':
                     logPolicy = "VERBOSE";
                     break;
@@ -107,168 +107,203 @@ class OptionParser {
                     // getopt_long already printed an error message.
                     usage();
                     exit(1);
+                }
+            }
+        }
+
+        void usage()
+        {
+            std::cout
+                << "Writes repeatedly to LogCabin. Stops once it reaches "
+                << "the given number of"
+                << std::endl
+                << "writes or the timeout, whichever comes first."
+                << std::endl
+                << std::endl
+                << "This program is subject to change (it is not part of "
+                << "LogCabin's stable API)."
+                << std::endl
+                << std::endl
+
+                << "Usage: " << argv[0] << " [options]"
+                << std::endl
+                << std::endl
+
+                << "Options:"
+                << std::endl
+
+                << "  -c <addresses>, --cluster=<addresses>  "
+                << "Network addresses of the LogCabin"
+                << std::endl
+                << "                                         "
+                << "servers, comma-separated"
+                << std::endl
+                << "                                         "
+                << "[default: logcabin:5254]"
+                << std::endl
+
+                << "  -h, --help              "
+                << "Print this usage information"
+                << std::endl
+
+                << "  --size <bytes>          "
+                << "Size of value in each write [default: 1024]"
+                << std::endl
+
+                << "  --threads <num>         "
+                << "Number of concurrent writers [default: 1]"
+                << std::endl
+
+                << "  --timeout <time>        "
+                << "Time after which to exit [default: 30s]"
+                << std::endl
+
+                << "  --writes <num>          "
+                << "Number of total writes [default: 1000]"
+                << std::endl
+
+                << "  -v, --verbose           "
+                << "Same as --verbosity=VERBOSE"
+                << std::endl
+
+                << "  --verbosity=<policy>    "
+                << "Set which log messages are shown."
+                << std::endl
+                << "                          "
+                << "Comma-separated LEVEL or PATTERN@LEVEL rules."
+                << std::endl
+                << "                          "
+                << "Levels: SILENT, ERROR, WARNING, NOTICE, VERBOSE."
+                << std::endl
+                << "                          "
+                << "Patterns match filename prefixes or suffixes."
+                << std::endl
+                << "                          "
+                << "Example: Client@NOTICE,Test.cc@SILENT,VERBOSE."
+                << std::endl;
+        }
+
+        int &argc;
+        char **&argv;
+        std::string cluster;
+        std::string logPolicy;
+        uint64_t size;
+        uint64_t writers;
+        uint64_t totalWrites;
+        uint64_t timeout;
+        u_int64_t rps;
+    };
+
+    /**
+     * The main function for a single client thread.
+     * \param id
+     *      Unique ID for this thread, counting from 0.
+     * \param options
+     *      Arguments describing benchmark.
+     * \param tree
+     *      Interface to LogCabin.
+     * \param key
+     *      Key to write repeatedly.
+     * \param value
+     *      Value to write at key repeatedly.
+     * \param exit
+     *      When this becomes true, this thread should exit.
+     * \param[out] writesDone
+     *      The number of writes this thread has completed.
+     */
+    void
+    writeThreadMain(uint64_t id,
+                    OptionParser &options,
+                    Tree tree,
+                    const std::string &key,
+                    const std::string &value,
+                    std::atomic<bool> &exit,
+                    uint64_t &writesDone,
+                    double &total_latency,
+                    double &total_throughput)
+    {
+        uint64_t numWrites = options.totalWrites / options.writers;
+        float ops;
+        // assign any odd leftover writes in a balanced way
+        if (options.totalWrites - numWrites * options.writers > id)
+            numWrites += 1;
+
+        auto targetOps = options.rps / options.writers;
+        long tmp = 1000 / targetOps;
+        auto ratio = std::chrono::milliseconds(tmp);
+        std::chrono::duration<double> timeBetweenOperation(ratio);
+        std::chrono::time_point<std::chrono::steady_clock, decltype(timeBetweenOperation)> tp;
+        std::chrono::time_point<std::chrono::high_resolution_clock> started = std::chrono::high_resolution_clock::now();
+        for (uint64_t i = 0; i < numWrites; ++i)
+        {
+            if (exit)
+                break;
+            tp = std::chrono::steady_clock::now() + timeBetweenOperation;
+            std::chrono::time_point<std::chrono::high_resolution_clock> cur_start = std::chrono::high_resolution_clock::now();
+            tree.writeEx(key, value);
+            std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - cur_start).count();
+            writesDone = i + 1;
+            total_latency += duration;
+            std::this_thread::sleep_until(tp);
+        }
+        std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
+        auto dt_us = std::chrono::duration_cast<std::chrono::microseconds>(now - started).count();
+        if (dt_us > 0)
+        {
+            ops = writesDone * 1000000.0 / dt_us;
+        }
+        else
+        {
+            ops = 0.0;
+        }
+
+        total_throughput += ops;
+        // std::cout << "Operations per second: " << ops << std::endl;
+        // std::cout << "Target operations per second: ~" << targetOps << std::endl;
+    }
+
+    /**
+     * Return the time since the Unix epoch in nanoseconds.
+     */
+    uint64_t timeNanos()
+    {
+        struct timespec now;
+        int r = clock_gettime(CLOCK_REALTIME, &now);
+        assert(r == 0);
+        return uint64_t(now.tv_sec) * 1000 * 1000 * 1000 + uint64_t(now.tv_nsec);
+    }
+
+    /**
+     * Main function for the timer thread, whose job is to wait until a particular
+     * timeout elapses and then set 'exit' to true.
+     * \param timeout
+     *      Seconds to wait before setting exit to true.
+     * \param[in,out] exit
+     *      If this is set to true from another thread, the timer thread will exit
+     *      soonish. Also, if the timeout elapses, the timer thread will set this
+     *      to true and exit.
+     */
+    void
+    timerThreadMain(uint64_t timeout, std::atomic<bool> &exit)
+    {
+        uint64_t start = timeNanos();
+        while (!exit)
+        {
+            usleep(50 * 1000);
+            if ((timeNanos() - start) > timeout)
+            {
+                exit = true;
             }
         }
     }
 
-    void usage() {
-        std::cout
-            << "Writes repeatedly to LogCabin. Stops once it reaches "
-            << "the given number of"
-            << std::endl
-            << "writes or the timeout, whichever comes first."
-            << std::endl
-            << std::endl
-            << "This program is subject to change (it is not part of "
-            << "LogCabin's stable API)."
-            << std::endl
-            << std::endl
-
-            << "Usage: " << argv[0] << " [options]"
-            << std::endl
-            << std::endl
-
-            << "Options:"
-            << std::endl
-
-            << "  -c <addresses>, --cluster=<addresses>  "
-            << "Network addresses of the LogCabin"
-            << std::endl
-            << "                                         "
-            << "servers, comma-separated"
-            << std::endl
-            << "                                         "
-            << "[default: logcabin:5254]"
-            << std::endl
-
-            << "  -h, --help              "
-            << "Print this usage information"
-            << std::endl
-
-            << "  --size <bytes>          "
-            << "Size of value in each write [default: 1024]"
-            << std::endl
-
-            << "  --threads <num>         "
-            << "Number of concurrent writers [default: 1]"
-            << std::endl
-
-            << "  --timeout <time>        "
-            << "Time after which to exit [default: 30s]"
-            << std::endl
-
-            << "  --writes <num>          "
-            << "Number of total writes [default: 1000]"
-            << std::endl
-
-            << "  -v, --verbose           "
-            << "Same as --verbosity=VERBOSE"
-            << std::endl
-
-            << "  --verbosity=<policy>    "
-            << "Set which log messages are shown."
-            << std::endl
-            << "                          "
-            << "Comma-separated LEVEL or PATTERN@LEVEL rules."
-            << std::endl
-            << "                          "
-            << "Levels: SILENT, ERROR, WARNING, NOTICE, VERBOSE."
-            << std::endl
-            << "                          "
-            << "Patterns match filename prefixes or suffixes."
-            << std::endl
-            << "                          "
-            << "Example: Client@NOTICE,Test.cc@SILENT,VERBOSE."
-            << std::endl;
-    }
-
-    int& argc;
-    char**& argv;
-    std::string cluster;
-    std::string logPolicy;
-    uint64_t size;
-    uint64_t writers;
-    uint64_t totalWrites;
-    uint64_t timeout;
-};
-
-/**
- * The main function for a single client thread.
- * \param id
- *      Unique ID for this thread, counting from 0.
- * \param options
- *      Arguments describing benchmark.
- * \param tree
- *      Interface to LogCabin.
- * \param key
- *      Key to write repeatedly.
- * \param value
- *      Value to write at key repeatedly.
- * \param exit
- *      When this becomes true, this thread should exit.
- * \param[out] writesDone
- *      The number of writes this thread has completed.
- */
-void
-writeThreadMain(uint64_t id,
-                const OptionParser& options,
-                Tree tree,
-                const std::string& key,
-                const std::string& value,
-                std::atomic<bool>& exit,
-                uint64_t& writesDone)
-{
-    uint64_t numWrites = options.totalWrites / options.writers;
-    // assign any odd leftover writes in a balanced way
-    if (options.totalWrites - numWrites * options.writers > id)
-        numWrites += 1;
-    for (uint64_t i = 0; i < numWrites; ++i) {
-        if (exit)
-            break;
-        tree.writeEx(key, value);
-        writesDone = i + 1;
-    }
-}
-
-/**
- * Return the time since the Unix epoch in nanoseconds.
- */
-uint64_t timeNanos()
-{
-    struct timespec now;
-    int r = clock_gettime(CLOCK_REALTIME, &now);
-    assert(r == 0);
-    return uint64_t(now.tv_sec) * 1000 * 1000 * 1000 + uint64_t(now.tv_nsec);
-}
-
-/**
- * Main function for the timer thread, whose job is to wait until a particular
- * timeout elapses and then set 'exit' to true.
- * \param timeout
- *      Seconds to wait before setting exit to true.
- * \param[in,out] exit
- *      If this is set to true from another thread, the timer thread will exit
- *      soonish. Also, if the timeout elapses, the timer thread will set this
- *      to true and exit.
- */
-void
-timerThreadMain(uint64_t timeout, std::atomic<bool>& exit)
-{
-    uint64_t start = timeNanos();
-    while (!exit) {
-        usleep(50 * 1000);
-        if ((timeNanos() - start) > timeout) {
-            exit = true;
-        }
-    }
-}
-
 } // anonymous namespace
 
-int
-main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    try {
+    try
+    {
 
         OptionParser options(argc, argv);
         LogCabin::Client::Debug::setLogPolicy(
@@ -283,33 +318,44 @@ main(int argc, char** argv)
         uint64_t startNanos = timeNanos();
         std::atomic<bool> exit(false);
         std::vector<uint64_t> writesDonePerThread(options.writers);
+        std::vector<double> latencyPerThread(options.writers);
+        std::vector<double> throughputPerThread(options.writers);
         uint64_t totalWritesDone = 0;
+        double totalLatency = 0;
+        double totalThroughput = 0;
         std::vector<std::thread> threads;
         std::thread timer(timerThreadMain, options.timeout, std::ref(exit));
-        for (uint64_t i = 0; i < options.writers; ++i) {
+        for (uint64_t i = 0; i < options.writers; ++i)
+        {
             threads.emplace_back(writeThreadMain, i, std::ref(options),
                                  tree, std::ref(key), std::ref(value),
                                  std::ref(exit),
-                                 std::ref(writesDonePerThread.at(i)));
+                                 std::ref(writesDonePerThread.at(i)),
+                                 std::ref(latencyPerThread.at(i)),
+                                 std::ref(throughputPerThread.at(i)));
         }
-        for (uint64_t i = 0; i < options.writers; ++i) {
+        for (uint64_t i = 0; i < options.writers; ++i)
+        {
             threads.at(i).join();
             totalWritesDone += writesDonePerThread.at(i);
+            totalLatency += latencyPerThread.at(i);
+            totalThroughput += throughputPerThread.at(i);
         }
         uint64_t endNanos = timeNanos();
         exit = true;
         timer.join();
 
         tree.removeFile(key);
-        std::cout << "Benchmark took "
-                  << static_cast<double>(endNanos - startNanos) / 1e6
-                  << " ms to write "
-                  << totalWritesDone
-                  << " objects"
+        double average_latency = totalLatency / totalWritesDone;
+        std::cout << "Latency "
+                  << average_latency
+                  << " RPS "
+                  << totalThroughput
                   << std::endl;
         return 0;
-
-    } catch (const LogCabin::Client::Exception& e) {
+    }
+    catch (const LogCabin::Client::Exception &e)
+    {
         std::cerr << "Exiting due to LogCabin::Client::Exception: "
                   << e.what()
                   << std::endl;

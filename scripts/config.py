@@ -34,7 +34,7 @@ __all__ = ['git_branch',
 # git_branch is the name of the current git branch, which is used
 # for purposes such as computing objDir.
 try:
-    git_branch = re.search('^refs/heads/(.*)$',
+    git_branch = re.search(b'^refs/heads/(.*)$',
                            captureSh('git symbolic-ref -q HEAD 2>/dev/null'))
 except subprocess.CalledProcessError:
     git_branch = None
