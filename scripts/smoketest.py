@@ -40,6 +40,49 @@ import os
 import random
 import subprocess
 import time
+import re
+
+servers = {}
+
+def same(seq):
+    for x in seq:
+        if x != seq[0]:
+            return False
+    return True
+
+def await_stable_leader(sandbox, server_ids, after_term=0):
+    while True:
+        server_beliefs = {}
+        for server_id in server_ids:
+            server_beliefs[server_id] = {'leader': None,
+                                         'term': None,
+                                         'wake': None}
+            b = server_beliefs[server_id]
+            for line in open('debug/%d' % server_id):
+                m = re.search('All hail leader (\d+) for term (\d+)', line)
+                if m is not None:                    
+                    b['leader'] = int(m.group(1))
+                    b['term'] = int(m.group(2))
+                    print(b)
+                    continue
+                m = re.search('Now leader for term (\d+)', line)
+                if m is not None:
+                    b['leader'] = server_id
+                    b['term'] = int(m.group(1))
+                    print(b)
+                    continue
+                m = re.search('Running for election in term (\d+)', line)
+                if m is not None:
+                    b['wake'] = int(m.group(1))
+        terms = [b['term'] for b in server_beliefs.values()]
+        leaders = [b['leader'] for b in server_beliefs.values()]
+        if same(terms) and terms[0] > after_term:
+            assert same(leaders), server_beliefs
+            return {'leader': leaders[0],
+                    'term': terms[0]}
+        else:
+            time.sleep(.25)
+            sandbox.checkFailures()
 
 def main():
     arguments = docopt(__doc__)
@@ -77,37 +120,46 @@ def main():
 
 
         print('Initializing first server\'s log')
-        sandbox.rsh(smokehosts[0][0],
+        server = sandbox.rsh(smokehosts[0][0],
                     '%s --bootstrap --config logcabin-%d.conf' %
                     (server_command, server_ids[0]),
                    stderr=open('debug/bootstrap', 'w'))
         print()
+
+        servers[server_ids[0]] = server
 
         for server_id in server_ids:
             host = smokehosts[server_id - 1]
             command = ('%s --config logcabin-%d.conf' %
                        (server_command, server_id))
             print('Starting %s on %s' % (command, host[0]))
-            sandbox.rsh(host[0], command, bg=True,
+            server = sandbox.rsh(host[0], command, bg=True,
                         stderr=open('debug/%d' % server_id, 'w'))
             sandbox.checkFailures()
+            servers[server_id] = server        
 
         print('Growing cluster')
         sh('build/Examples/Reconfigure %s %s set %s' %
            (cluster,
             reconf_opts,
             ' '.join([h[0] for h in smokehosts[:num_servers]])))
+        
+        old = await_stable_leader(sandbox, server_ids)
+        print('Server %d is the leader in term %d' % (old['leader'], old['term']))
+
+        for p in sandbox.processes:
+            print(p.proc.name)
 
         print('Starting %s %s on localhost' % (client_command, cluster))
         rps = 5
-        writers = 5
-        while rps <= 120:
+        writers = 1
+        while writers <= 30:
             rps_command = '--rps %s' % rps
             writers_command = '--threads %s' % writers
-            client = sandbox.rsh('localhost', '%s %s %s %s' % (client_command, cluster, rps_command, writers_command),
+            client = sandbox.rsh('localhost', '%s %s %s' % (client_command, cluster, writers_command),
                                 bg=True,
                                 stderr=open('debug/client', 'w'))
-            rps += 5
+            writers += 1
 
             start = time.time()
             while client.proc.returncode is None:

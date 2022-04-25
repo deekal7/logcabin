@@ -288,19 +288,6 @@ timerThreadMain(uint64_t timeout, std::atomic<bool>& exit)
     }
 }
 
-void
-printConfiguration(const std::pair<uint64_t, Configuration>& configuration)
-{
-    std::cout << "Configuration " << configuration.first << ":" << std::endl;
-    for (auto it = configuration.second.begin();
-         it != configuration.second.end();
-         ++it) {
-        std::cout << "- " << it->serverId << ": " << it->addresses
-                  << std::endl;
-    }
-    std::cout << std::endl;
-}
-
 } // anonymous namespace
 
 int
@@ -348,9 +335,6 @@ main(int argc, char** argv)
 
         tree.removeFile(key);
         double average_latency = totalLatency / totalWritesDone;
-
-        std::cout << "Current configuration:" << std::endl;
-        printConfiguration(cluster.getConfiguration());
 
         std::cout << "Latency "
                   << average_latency
