@@ -76,9 +76,9 @@ def await_stable_leader(server_ids, after_term=0):
 def main():
     arguments = docopt(__doc__)
     client_command = arguments['--client']
-    server_command = arguments['--binary']
+    server_command = 'build/LogCabin'
     num_servers = int(arguments['--servers'])
-    reconf_opts = arguments['--reconf']
+    reconf_opts = ''
     if reconf_opts == "''":
         reconf_opts = ""
     timeout = int(arguments['--timeout'])
@@ -92,22 +92,14 @@ def main():
     sh('rm -f debug/*')
     sh('mkdir -p debug')
 
-    for server_id in server_ids:
-        host = smokehosts[server_id - 1]
-        with open('logcabin-%d.conf' % server_id, 'w') as f:
-            f.write('serverId = %d\n' % server_id)
-            f.write('listenAddresses = %s\n' % host[0])
-            f.write('snapshotMinLogSize = 1024')
-            f.write('\n\n')
-            try:
-                f.write(open('smoketest.conf').read())
-            except:
-                pass
-
     print('Initializing first server\'s log')
-    p = sh('%s --bootstrap --config logcabin-%d.conf' %
+    command = ('%s --config logcabin-%d.conf' %
+                   (server_command, 1))
+    p = subprocess.Popen('%s --bootstrap --config logcabin-%d.conf' %
            (server_command, server_ids[0]),
-           stderr=open('debug/bootstrap', 'w'))
+           shell=True,
+           stderr=open('debug/bootstrap', 'w'),
+           stdout=subprocess.DEVNULL)
     processes[1] = p
 
     for server_id in server_ids:
@@ -116,16 +108,20 @@ def main():
                    (server_command, server_id))
         print('Starting %s on %s' % (command, host[0]))
 
-        p = sh('%s --bootstrap --config logcabin-%d.conf' %
+        p = subprocess.Popen('%s --bootstrap --config logcabin-%d.conf' %
                (server_command, server_ids[0]),
-               stderr=open('debug/bootstrap', 'w'))
+               shell=True,
+               stderr=open('debug/%d' % server_id, 'w'),
+               stdout=subprocess.DEVNULL)
         processes[server_id] = p
 
     print('Growing cluster')
-    sh('build/Examples/Reconfigure %s %s set %s' %
+    subprocess.Popen('build/Examples/Reconfigure %s %s set %s' %
        (cluster,
         reconf_opts,
-        ' '.join([h[0] for h in smokehosts[:num_servers]])))
+        ' '.join([h[0] for h in smokehosts[:num_servers]])),
+        shell=True,
+        stdout=subprocess.DEVNULL)
 
     roles = await_stable_leader(server_ids)
     print('Server %d is the leader in term %d' % (roles['leader'], roles['term']))
