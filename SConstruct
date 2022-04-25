@@ -312,6 +312,8 @@ env.InstallAs('/etc/init.d/logcabin',           'scripts/logcabin-init-redhat')
 env.InstallAs('/usr/bin/logcabinctl',           'build/Client/ServerControl')
 env.InstallAs('/usr/bin/logcabind',             'build/LogCabin')
 env.InstallAs('/usr/bin/logcabin',              'build/Examples/TreeOps')
+env.InstallAs('/usr/bin/logcabin-origbenchmark',
+              'build/Examples/OriginalBenchmark')
 env.InstallAs('/usr/bin/logcabin-benchmark',    'build/Examples/Benchmark')
 env.InstallAs('/usr/bin/logcabin-reconfigure',  'build/Examples/Reconfigure')
 env.InstallAs('/usr/bin/logcabin-smoketest',    'build/Examples/SmokeTest')

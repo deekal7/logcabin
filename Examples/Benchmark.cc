@@ -52,7 +52,7 @@ namespace
     {
     public:
         OptionParser(int &argc, char **&argv)
-            : argc(argc), argv(argv), cluster("logcabin:5254"), logPolicy(""), size(10), writers(25), totalWrites(100000), timeout(parseNonNegativeDuration("30s")), rps(50)
+            : argc(argc), argv(argv), cluster("logcabin:5254"), logPolicy(""), size(10), writers(5), totalWrites(100000), timeout(parseNonNegativeDuration("30s")), rps(50)
         {
             while (true)
             {

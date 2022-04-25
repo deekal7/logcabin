@@ -24,7 +24,7 @@ def plot_points(file):
     # y_smooth=f(x_new)
 
     plt.plot(x,y)
-    # plt.scatter (x, y)
+    plt.scatter (x, y)
     plt.xlabel('Throughput (ops/s)')
     plt.ylabel('Latency (ms)')
     plt.show()
