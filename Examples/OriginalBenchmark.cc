@@ -58,7 +58,7 @@ class OptionParser {
         , logPolicy("")
         , size(10)
         , writers(1)
-        , totalWrites(10000)
+        , totalWrites(100000)
         , timeout(parseNonNegativeDuration("30s"))
     {
         while (true) {
