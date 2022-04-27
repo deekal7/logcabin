@@ -1,0 +1,35 @@
+{
+    "servers":
+    [
+        {
+            "name": "1",
+            "ip": "localhost",
+            "datadir": "/data1",
+            "swapfile":"/data1/swapfile",
+            "ramdisk_size":"1500M",
+            "swapbs": 1024,
+            "swapcount": "1M",
+            "cpu": 5
+        },
+        {
+            "name": "2",
+            "ip": "localhost",
+            "datadir": "/data2",
+            "swapfile":"/data2/swapfile",
+            "ramdisk_size":"1500M",
+            "swapbs": 1024,
+            "swapcount": "1M",
+            "cpu": 6
+        },
+        {
+            "name": "3",
+            "ip": "localhost",
+            "datadir": "/data3",
+            "swapfile":"/data3/swapfile",
+            "ramdisk_size":"1500M",
+            "swapbs": 1024,
+            "swapcount": "1M",
+            "cpu": 7
+        }
+    ]
+}
