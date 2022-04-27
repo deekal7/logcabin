@@ -20,6 +20,7 @@ class Quorum:
         self.primaryhost = None
         self.fault_server_config = None
         self.fault_pids = None
+        self.single_run = opt.single_run
 
     def server_setup(self):
         if self.ondisk == "disk":

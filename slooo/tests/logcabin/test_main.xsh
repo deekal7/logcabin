@@ -156,8 +156,11 @@ class LogCabin(Quorum):
             print('Binding process %d' % pid)
             command = f"taskset -cp {cfg['cpu']} {pid}"
             sleep 5
-            sh(command)
-            print('Finished binding process %d' % pid)
+            try:
+                sh(command)
+            except:
+                print("Failed to bind process %d to cpu %d" % (pid, cfg['cpu']))
+                pass
 
     def db_init(self):
         roles = await_stable_leader(self.server_ids)
@@ -189,15 +192,27 @@ class LogCabin(Quorum):
         pass
 
     def benchmark_run(self):
-        writers = 1
-        while writers <= 50:
+        print(self.single_run)
+        if not self.single_run:
+            writers = 1
+            while writers <= 50:
+                writers_command = '--threads %s' % writers
+                client = subprocess.Popen('%s %s %s' % (self.client_command, self.cluster, writers_command),
+                                        shell=True,
+                                        stdout=open('outputs/follower-mem-cont', 'a+'),
+                                        stderr=open('debug/client', 'w'))
+                writers += 2
+                time.sleep(40)
+        else:
+            print("In single run")
+            writers = 27
             writers_command = '--threads %s' % writers
-            client = subprocess.Popen('%s %s %s' % (self.client_command, self.cluster, writers_command),
-                                      shell=True,
-                                      stdout=open('outputs/benchmark', 'a+'),
-                                      stderr=open('debug/client', 'w'))
-            writers += 2
-            time.sleep(40)
+            print_command = '--printLatency %s' % 1
+            client = subprocess.Popen('%s %s %s %s' % (self.client_command, self.cluster, writers_command, print_command),
+                                        shell=True,
+                                        stdout=open('outputs/leader-mem-cont-single', 'a+'),
+                                        stderr=open('debug/client', 'w'))
+        time.sleep(40)
 
     def db_cleanup(self):
         try:
@@ -218,7 +233,7 @@ class LogCabin(Quorum):
         self.fault_process = Process(target=fault_inject, args=(
             self.exp, self.fault_server_config, self.fault_pids, self.fault_snooze, ))
         self.fault_process.start()
-        sleep 10
+        sleep 30
 
         self.benchmark_run()
         self.fault_process.join()

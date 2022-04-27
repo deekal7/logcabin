@@ -1,0 +1,26 @@
+
+Latency 4.57037 RPS 198.446 threads 1 writes 5954
+Latency 8.25975 RPS 342.567 threads 3 writes 10279
+Latency 8.20094 RPS 574.837 threads 5 writes 17274
+Latency 8.41093 RPS 785.167 threads 7 writes 23561
+Latency 8.49591 RPS 999.86 threads 9 writes 30046
+Latency 8.85735 RPS 1175.6 threads 11 writes 35325
+Latency 9.15838 RPS 1346.21 threads 13 writes 40454
+Latency 9.39254 RPS 1515.64 threads 15 writes 45488
+Latency 10.1692 RPS 1593.23 threads 17 writes 47807
+Latency 11.3261 RPS 1606.28 threads 19 writes 48276
+Latency 12.4521 RPS 1620.98 threads 21 writes 48708
+Latency 13.6783 RPS 1622.13 threads 23 writes 48748
+Latency 14.8507 RPS 1628.13 threads 25 writes 48867
+Latency 16.013 RPS 1634.94 threads 27 writes 49067
+Latency 17.2643 RPS 1632.36 threads 29 writes 49065
+Latency 18.5646 RPS 1625.83 threads 31 writes 48791
+Latency 19.7547 RPS 1628.97 threads 33 writes 48963
+Latency 20.9594 RPS 1630.84 threads 35 writes 49013
+Latency 22.1607 RPS 1632.76 threads 37 writes 49013
+Latency 23.5 RPS 1624.72 threads 39 writes 48765
+Latency 24.5971 RPS 1633.53 threads 41 writes 49108
+Latency 27.0208 RPS 1562.42 threads 43 writes 46967
+Latency 31.5324 RPS 1404.87 threads 45 writes 42238
+Latency 39.1237 RPS 1186.12 threads 47 writes 36021
+Latency 35.6305 RPS 1356.16 threads 49 writes 40702

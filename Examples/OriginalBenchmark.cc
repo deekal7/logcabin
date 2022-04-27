@@ -60,6 +60,7 @@ class OptionParser {
         , writers(1)
         , totalWrites(100000)
         , timeout(parseNonNegativeDuration("30s"))
+        , printLatency(0)
     {
         while (true) {
             static struct option longOptions[] = {
@@ -69,11 +70,12 @@ class OptionParser {
                {"threads",  required_argument, NULL, 't'},
                {"timeout",  required_argument, NULL, 'd'},
                {"writes",  required_argument, NULL, 'w'},
+               {"printLatency",  required_argument, NULL, 'p'},
                {"verbose",  no_argument, NULL, 'v'},
                {"verbosity",  required_argument, NULL, 256},
                {0, 0, 0, 0}
             };
-            int c = getopt_long(argc, argv, "c:hs:t:w:v", longOptions, NULL);
+            int c = getopt_long(argc, argv, "c:hs:t:w:v:p", longOptions, NULL);
 
             // Detect the end of the options.
             if (c == -1)
@@ -87,7 +89,7 @@ class OptionParser {
                     timeout = parseNonNegativeDuration(optarg);
                     break;
                 case 'h':
-                    usage();
+                    // usage();
                     exit(0);
                 case 's':
                     size = uint64_t(atol(optarg));
@@ -98,6 +100,9 @@ class OptionParser {
                 case 'w':
                     totalWrites = uint64_t(atol(optarg));
                     break;
+                case 'p':
+                    printLatency = uint64_t(atol(optarg));
+                    break;
                 case 'v':
                     logPolicy = "VERBOSE";
                     break;
@@ -107,7 +112,7 @@ class OptionParser {
                 case '?':
                 default:
                     // getopt_long already printed an error message.
-                    usage();
+                    // usage();
                     exit(1);
             }
         }
@@ -192,6 +197,7 @@ class OptionParser {
     uint64_t writers;
     uint64_t totalWrites;
     uint64_t timeout;
+    uint64_t printLatency;
 };
 
 /**
@@ -220,7 +226,8 @@ writeThreadMain(uint64_t id,
                 std::atomic<bool>& exit,
                 uint64_t& writesDone,
                 double &total_latency,
-                double &total_throughput)
+                double &total_throughput,
+                std::string &request_latency)
 {
     float ops;
     uint64_t numWrites = options.totalWrites;
@@ -236,7 +243,10 @@ writeThreadMain(uint64_t id,
         tree.writeEx(key, value);
 
         std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - cur_start).count();        
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - cur_start).count();
+        if (options.printLatency == 1) {
+            request_latency += std::to_string(duration) + ",";
+        }   
         total_latency += duration;
         writesDone = i + 1;
     }
@@ -310,6 +320,7 @@ main(int argc, char** argv)
         std::vector<uint64_t> writesDonePerThread(options.writers);
         std::vector<double> latencyPerThread(options.writers);
         std::vector<double> throughputPerThread(options.writers);
+        std::vector<std::string> latencyPerRequest(options.writers);
         uint64_t totalWritesDone = 0;
         double totalLatency = 0;
         double totalThroughput = 0;
@@ -321,13 +332,15 @@ main(int argc, char** argv)
                                  std::ref(exit),
                                  std::ref(writesDonePerThread.at(i)),
                                  std::ref(latencyPerThread.at(i)),
-                                 std::ref(throughputPerThread.at(i)));
+                                 std::ref(throughputPerThread.at(i)),
+                                 std::ref(latencyPerRequest.at(i)));
         }
         for (uint64_t i = 0; i < options.writers; ++i) {
             threads.at(i).join();
             totalWritesDone += writesDonePerThread.at(i);
             totalLatency += latencyPerThread.at(i);
             totalThroughput += throughputPerThread.at(i);
+            std::cout<<latencyPerRequest.at(i)<<std::endl;
         }
         uint64_t endNanos = timeNanos();
         exit = true;
