@@ -7,7 +7,7 @@ import os
 
 
 def plot_cdf(directory):
-    colors = ['blue', 'green', 'yellow']
+    colors = ['red', 'blue', 'green', 'yellow', 'magenta', 'cyan', 'black']
     i = 0
     for file in os.listdir(directory):
         filename = os.fsdecode(file)
@@ -26,14 +26,14 @@ def plot_cdf(directory):
             counts, bin_edges = np.histogram(latencies, bins=bins, density=False)
             counts=counts.astype(float)/len(latencies)
             cdf = np.cumsum(counts)
-            plt.plot(bin_edges[0:-1], cdf, linestyle='--', marker="o", color=colors[i], label=filename)
+            plt.plot(bin_edges[0:-1], cdf, linestyle='--', marker="o", color=colors[i], label=filename+'MB')
             plt.ylim((0,1))
             i += 1
 
     plt.legend()
     plt.ylabel('CDF')
     plt.xlabel('Latency (ms)')
-    plt.title('Follower Latency vs CDF')
+    plt.title('Leader Latency vs CDF Different Mem Contention')
     plt.show()
 
 
