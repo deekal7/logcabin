@@ -31,9 +31,10 @@ def plot_cdf(directory):
             i += 1
 
     plt.legend()
+    plt.axis((0, 100, 0, 1))
     plt.ylabel('CDF')
     plt.xlabel('Latency (ms)')
-    plt.title('Leader Latency vs CDF Different Mem Contention')
+    plt.title('Follower Latency vs Different Memory Contention')
     plt.show()
 
 
