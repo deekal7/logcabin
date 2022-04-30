@@ -210,7 +210,7 @@ class LogCabin(Quorum):
             print_command = '--printLatency %s' % 1
             client = subprocess.Popen('%s %s %s %s' % (self.client_command, self.cluster, writers_command, print_command),
                                         shell=True,
-                                        stdout=open('outputs/follower-mem-cont-5', 'a+'),
+                                        stdout=open('mem_contention_leader/1', 'a+'),
                                         stderr=open('debug/client', 'w'))
         time.sleep(40)
 

@@ -1,0 +1,6 @@
+2022-04-30 14:53:07.738336 Client/ClientImpl.cc:451 in ClientImpl() NOTICE[50514:thread 1]: Configuration settings:
+# begin config
+# end config
+2022-04-30 14:53:07.738584 Client/ClientImpl.cc:481 in initDerived() NOTICE[50514:thread 1]: Using server list: 127.0.0.1:5255,127.0.0.1:5256,127.0.0.1:5257
+2022-04-30 14:53:07.740542 Client/LeaderRPC.cc:334 in reportRedirect() NOTICE[50514:thread 3]: Server [Active session to 127.0.0.1:5255,127.0.0.1:5256,127.0.0.1:5257 (resolved to 127.0.0.1:5256)] is not leader, will try suggested localhost:5255 next (there have been 1 failed attempts during this outage)
+2022-04-30 14:53:07.751313 Client/LeaderRPC.cc:357 in reportSuccess() NOTICE[50514:thread 3]: Successfully connected to leader [Active session to localhost:5255 (resolved to 127.0.0.1:5255)] after 1 failures

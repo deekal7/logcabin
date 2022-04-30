@@ -1,0 +1,454 @@
+2022-04-30 14:44:54.233804 Server/Main.cc:305 in main() NOTICE[43434:evloop]: Using config file logcabin-3.conf
+2022-04-30 14:44:54.234118 Server/Main.cc:341 in main() NOTICE[43434:evloop]: Config file settings:
+# begin config
+listenAddresses = localhost:5257
+serverId = 3
+# end config
+2022-04-30 14:44:54.235532 Server/Globals.cc:171 in init() NOTICE[3:evloop]: Serving on localhost:5257 (resolved to 127.0.0.1:5257)
+2022-04-30 14:44:54.235588 Server/RaftConsensus.cc:1041 in init() NOTICE[3:evloop]: My server ID is 3
+2022-04-30 14:44:54.260111 Server/RaftConsensus.cc:1053 in init() NOTICE[3:evloop]: Reading the log
+2022-04-30 14:44:54.265378 Storage/SegmentedLog.cc:902 in readMetadata() WARNING[3:evloop]: Error reading metadata from metadata1: Could not open storage/server3/log/Segmented-Binary/metadata1: No such file or directory
+2022-04-30 14:44:54.265525 Storage/SegmentedLog.cc:902 in readMetadata() WARNING[3:evloop]: Error reading metadata from metadata2: Could not open storage/server3/log/Segmented-Binary/metadata2: No such file or directory
+2022-04-30 14:44:54.265570 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:evloop]: Writing new storage metadata (version 1) to metadata1
+2022-04-30 14:44:54.270663 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:evloop]: Writing new storage metadata (version 2) to metadata2
+2022-04-30 14:44:54.282126 Server/RaftConsensus.cc:1077 in init() NOTICE[3:evloop]: The log contains indexes 1 through 0 (inclusive)
+2022-04-30 14:44:54.282190 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:evloop]: Writing new storage metadata (version 3) to metadata1
+2022-04-30 14:44:54.287639 Server/RaftConsensus.cc:2642 in readSnapshot() NOTICE[3:evloop]: Snapshot file not found in storage/server3/snapshot
+2022-04-30 14:44:54.287779 Server/RaftConsensus.cc:1096 in init() NOTICE[3:evloop]: No configuration, waiting to receive one.
+2022-04-30 14:44:54.288039 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:evloop]: server=3, term=0, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:45:14.269057 Server/RaftConsensus.cc:1295 in handleAppendEntries() NOTICE[3:RaftService(12)]: Received AppendEntries request from server 1 in term 2 (this server's term was 0)
+2022-04-30 14:45:14.269121 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:RaftService(12)]: Writing new storage metadata (version 4) to metadata2
+2022-04-30 14:45:14.278750 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:RaftService(12)]: server=3, term=2, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:45:14.278853 Server/RaftConsensus.cc:1313 in handleAppendEntries() NOTICE[3:RaftService(12)]: All hail leader 1 for term 2
+2022-04-30 14:45:14.278869 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:RaftService(12)]: server=3, term=2, state=FOLLOWER,  leader=1, vote=0
+2022-04-30 14:45:14.282525 Server/RaftConsensus.cc:584 in setConfiguration() NOTICE[3:RaftService(12)]: Activating configuration 1:
+prev_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+}
+
+2022-04-30 14:45:14.282592 Server/RaftConsensus.cc:318 in startThread() NOTICE[3:RaftService(12)]: Starting peer thread for server 1
+2022-04-30 14:45:14.282787 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 33% of the 3 total log entries
+2022-04-30 14:45:14.282854 Server/RaftConsensus.cc:2074 in peerThreadMain() NOTICE[3:Peer(1)]: Peer thread for server 1 started
+2022-04-30 14:45:14.282910 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 66% of the 3 total log entries
+2022-04-30 14:45:14.282950 Server/StateMachine.cc:366 in apply() NOTICE[3:StateMachine]: Upgrading state machine to version 2 (from 1)
+2022-04-30 14:45:14.288292 Server/RaftConsensus.cc:584 in setConfiguration() NOTICE[3:RaftService(12)]: Activating configuration 4:
+prev_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+}
+next_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+  servers {
+    server_id: 2
+    addresses: "localhost:5256"
+  }
+  servers {
+    server_id: 3
+    addresses: "localhost:5257"
+  }
+}
+
+2022-04-30 14:45:14.288402 Server/RaftConsensus.cc:318 in startThread() NOTICE[3:RaftService(12)]: Starting peer thread for server 2
+2022-04-30 14:45:14.289019 Server/RaftConsensus.cc:2074 in peerThreadMain() NOTICE[3:Peer(2)]: Peer thread for server 2 started
+2022-04-30 14:45:14.294039 Server/RaftConsensus.cc:584 in setConfiguration() NOTICE[3:RaftService(12)]: Activating configuration 5:
+prev_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+  servers {
+    server_id: 2
+    addresses: "localhost:5256"
+  }
+  servers {
+    server_id: 3
+    addresses: "localhost:5257"
+  }
+}
+
+2022-04-30 14:45:14.294409 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 80% of the 5 total log entries
+2022-04-30 14:45:54.234750 Server/ServerStats.cc:147 in dumpToDebugLog() NOTICE[3:StatsDumper]: ServerStats:
+server_id: 3
+addresses: "localhost:5257"
+start_at: 1651329954234037021
+end_at: 1651329954234110389
+raft {
+  current_term: 2
+  state: FOLLOWER
+  commit_index: 5
+  last_log_index: 5
+  leader_id: 1
+  voted_for: 0
+  start_election_at: 1651329954814489401
+  withhold_votes_until: 1651329954572627825
+  cluster_time: 78999357403
+  cluster_time_epoch: 39059479190
+  last_snapshot_index: 0
+  last_snapshot_bytes: 0
+  log_start_index: 1
+  log_bytes: 349
+  last_snapshot_term: 0
+  last_snapshot_cluster_time: 0
+  num_entries_truncated: 0
+  peer {
+    server_id: 2
+    addresses: "localhost:5256"
+    old_member: true
+    new_member: false
+    staging_member: false
+  }
+  peer {
+    server_id: 1
+    addresses: "localhost:5255"
+    old_member: true
+    new_member: false
+    staging_member: false
+  }
+  peer {
+    server_id: 3
+    addresses: "localhost:5257"
+    old_member: true
+    new_member: false
+    staging_member: false
+  }
+}
+storage {
+  num_segments: 1
+  open_segment_bytes: 349
+  metadata_version: 4
+  metadata_write_nanos {
+    average: 6487144.5
+    count: 4
+    ewma2: 7499553.375
+    ewma4: 6359254.015625
+    exceptional_count: 0
+    last: 9595175
+    min: 5027881
+    max: 9595175
+    sum: 25948578
+    stddev: 1835021.7603236344
+  }
+  filesystem_ops_nanos {
+    average: 2607118.3333333335
+    count: 3
+    ewma2: 2340907
+    ewma4: 2430988.5
+    exceptional_count: 0
+    last: 1542273
+    min: 1542273
+    max: 3964169
+    sum: 7821355
+    stddev: 1010093.4037092257
+  }
+}
+state_machine {
+  snapshotting: false
+  last_applied: 5
+  num_sessions: 0
+  num_snapshots_attempted: 0
+  num_snapshots_failed: 0
+  num_redundant_advance_version_entries: 0
+  num_rejected_advance_version_entries: 0
+  num_successful_advance_version_entries: 1
+  num_total_advance_version_entries: 1
+  min_supported_version: 1
+  max_supported_version: 2
+  running_version: 2
+  tree {
+    num_conditions_checked: 0
+    num_conditions_failed: 0
+    num_make_directory_attempted: 0
+    num_make_directory_success: 0
+    num_list_directory_attempted: 0
+    num_list_directory_success: 0
+    num_remove_directory_attempted: 0
+    num_remove_directory_parent_not_found: 0
+    num_remove_directory_target_not_found: 0
+    num_remove_directory_done: 0
+    num_remove_directory_success: 0
+    num_write_attempted: 0
+    num_write_success: 0
+    num_read_attempted: 0
+    num_read_success: 0
+    num_remove_file_attempted: 0
+    num_remove_file_parent_not_found: 0
+    num_remove_file_target_not_found: 0
+    num_remove_file_done: 0
+    num_remove_file_success: 0
+  }
+  num_unknown_requests: 0
+  may_snapshot_at: -7572044429996340747
+}
+
+2022-04-30 14:46:19.361763 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 85% of the 7 total log entries
+2022-04-30 14:46:19.366222 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 43% of the 16 total log entries
+2022-04-30 14:46:19.373008 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 43% of the 23 total log entries
+2022-04-30 14:46:19.373105 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 52% of the 23 total log entries
+2022-04-30 14:46:19.373209 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 60% of the 23 total log entries
+2022-04-30 14:46:19.376717 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 42% of the 38 total log entries
+2022-04-30 14:46:19.376823 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 50% of the 38 total log entries
+2022-04-30 14:46:19.376910 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 60% of the 38 total log entries
+2022-04-30 14:46:19.380986 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 61% of the 44 total log entries
+2022-04-30 14:46:19.381111 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 70% of the 44 total log entries
+2022-04-30 14:46:19.385360 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 61% of the 54 total log entries
+2022-04-30 14:46:19.385551 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 70% of the 54 total log entries
+2022-04-30 14:46:19.389726 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 80% of the 55 total log entries
+2022-04-30 14:46:19.396486 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 70% of the 70 total log entries
+2022-04-30 14:46:19.405629 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 80% of the 80 total log entries
+2022-04-30 14:46:19.413428 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 70% of the 98 total log entries
+2022-04-30 14:46:19.413723 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 80% of the 98 total log entries
+2022-04-30 14:46:19.419418 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 107 total log entries
+2022-04-30 14:46:20.072450 Server/RaftConsensus.cc:2874 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 3 (haven't heard from leader 1 lately)
+2022-04-30 14:46:20.072523 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=3, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:20.072591 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 5) to metadata1
+2022-04-30 14:46:20.094981 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(2)]: Got vote from server 2 for term 3
+2022-04-30 14:46:20.095037 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(2)]: Now leader for term 3 (appending no-op at index 108)
+2022-04-30 14:46:20.095054 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(2)]: server=3, term=3, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:20.095438 Server/RaftConsensus.cc:2010 in stateMachineUpdaterThreadMain() NOTICE[3:StateMachineUpdater]: Waiting to receive state machine supported version information from all peers (missing 2 of 3)
+2022-04-30 14:46:20.276723 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 125 total log entries
+2022-04-30 14:46:20.291870 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 141 total log entries
+2022-04-30 14:46:20.292835 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 145 total log entries
+2022-04-30 14:46:20.298037 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 156 total log entries
+2022-04-30 14:46:20.301575 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 157 total log entries
+2022-04-30 14:46:20.301910 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 158 total log entries
+2022-04-30 14:46:20.302299 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[3:StateMachine]: Have applied 90% of the 159 total log entries
+2022-04-30 14:46:22.269556 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 4 from server 1, since this server (which is in term 3) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:22.269659 Server/RaftConsensus.cc:2317 in appendEntries() NOTICE[3:Peer(1)]: Received AppendEntries response from server 1 in term 4 (this server's term was 3)
+2022-04-30 14:46:22.269706 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:Peer(1)]: Writing new storage metadata (version 6) to metadata2
+2022-04-30 14:46:22.276230 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=4, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:22.854222 Server/RaftConsensus.cc:1553 in handleRequestVote() NOTICE[3:RaftService(12)]: Received RequestVote request from server 1 in term 5 (this server's term was 4)
+2022-04-30 14:46:22.854291 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:RaftService(12)]: Writing new storage metadata (version 7) to metadata1
+2022-04-30 14:46:22.859482 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:RaftService(12)]: server=3, term=5, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:23.068051 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 6
+2022-04-30 14:46:23.068113 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=6, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:23.068173 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 8) to metadata2
+2022-04-30 14:46:23.085661 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(1)]: Got vote from server 1 for term 6
+2022-04-30 14:46:23.085729 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(1)]: Now leader for term 6 (appending no-op at index 3397)
+2022-04-30 14:46:23.085740 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=6, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:26.258713 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 7 from server 1, since this server (which is in term 6) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:26.258992 Server/RaftConsensus.cc:2317 in appendEntries() NOTICE[3:Peer(1)]: Received AppendEntries response from server 1 in term 7 (this server's term was 6)
+2022-04-30 14:46:26.259025 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:Peer(1)]: Writing new storage metadata (version 9) to metadata1
+2022-04-30 14:46:26.266899 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=7, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:26.768121 Server/RaftConsensus.cc:1553 in handleRequestVote() NOTICE[3:RaftService(12)]: Received RequestVote request from server 1 in term 8 (this server's term was 7)
+2022-04-30 14:46:26.768202 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:RaftService(12)]: Writing new storage metadata (version 10) to metadata2
+2022-04-30 14:46:26.773173 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:RaftService(12)]: server=3, term=8, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:27.046754 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 9
+2022-04-30 14:46:27.046819 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=9, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:27.046877 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 11) to metadata1
+2022-04-30 14:46:27.064653 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(1)]: Got vote from server 1 for term 9
+2022-04-30 14:46:27.064745 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(1)]: Now leader for term 9 (appending no-op at index 8469)
+2022-04-30 14:46:27.064757 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=9, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:30.095485 Server/RaftConsensus.cc:1971 in stateMachineUpdaterThreadMain() NOTICE[3:StateMachineUpdater]: Appending log entry to advance state machine version to 2 (it may be set to 2 already, but it's hard to check that and not much overhead to just do it again)
+2022-04-30 14:46:32.258717 Server/RaftConsensus.cc:2317 in appendEntries() NOTICE[3:Peer(1)]: Received AppendEntries response from server 1 in term 10 (this server's term was 9)
+2022-04-30 14:46:32.258796 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:Peer(1)]: Writing new storage metadata (version 12) to metadata2
+2022-04-30 14:46:32.264995 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=10, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:32.991033 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 11
+2022-04-30 14:46:32.991150 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=11, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:32.991244 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 13) to metadata1
+2022-04-30 14:46:33.010775 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(2)]: Got vote from server 2 for term 11
+2022-04-30 14:46:33.010825 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(2)]: Now leader for term 11 (appending no-op at index 16725)
+2022-04-30 14:46:33.010836 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(2)]: server=3, term=11, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:33.259926 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 11 from server 1, since this server (which is in term 11) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:42.269254 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 12 from server 1, since this server (which is in term 11) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:42.269463 Server/RaftConsensus.cc:2317 in appendEntries() NOTICE[3:Peer(1)]: Received AppendEntries response from server 1 in term 12 (this server's term was 11)
+2022-04-30 14:46:42.269502 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:Peer(1)]: Writing new storage metadata (version 14) to metadata2
+2022-04-30 14:46:42.275015 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=12, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:42.890836 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 13
+2022-04-30 14:46:42.890915 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=13, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:42.890991 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 15) to metadata1
+2022-04-30 14:46:42.912046 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(2)]: Got vote from server 2 for term 13
+2022-04-30 14:46:42.912129 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(2)]: Now leader for term 13 (appending no-op at index 30849)
+2022-04-30 14:46:42.912140 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(2)]: server=3, term=13, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:43.265493 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 13 from server 1, since this server (which is in term 13) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:44.258552 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 14 from server 1, since this server (which is in term 13) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:44.258643 Server/RaftConsensus.cc:2317 in appendEntries() NOTICE[3:Peer(1)]: Received AppendEntries response from server 1 in term 14 (this server's term was 13)
+2022-04-30 14:46:44.258688 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:Peer(1)]: Writing new storage metadata (version 16) to metadata2
+2022-04-30 14:46:44.266690 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=14, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:44.886619 Server/RaftConsensus.cc:1553 in handleRequestVote() NOTICE[3:RaftService(12)]: Received RequestVote request from server 1 in term 15 (this server's term was 14)
+2022-04-30 14:46:44.886677 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:RaftService(12)]: Writing new storage metadata (version 17) to metadata1
+2022-04-30 14:46:44.892012 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:RaftService(12)]: server=3, term=15, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:44.918662 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 16
+2022-04-30 14:46:44.918725 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=16, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:44.918790 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 18) to metadata2
+2022-04-30 14:46:44.931114 Server/RaftConsensus.cc:2815 in requestVote() NOTICE[3:Peer(2)]: Vote denied by server 2 for term 16
+2022-04-30 14:46:44.941405 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(1)]: Got vote from server 1 for term 16
+2022-04-30 14:46:44.941480 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(1)]: Now leader for term 16 (appending no-op at index 32444)
+2022-04-30 14:46:44.941501 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=16, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:49.266572 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 17 from server 1, since this server (which is in term 16) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:49.266713 Server/RaftConsensus.cc:2317 in appendEntries() NOTICE[3:Peer(1)]: Received AppendEntries response from server 1 in term 17 (this server's term was 16)
+2022-04-30 14:46:49.266748 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:Peer(1)]: Writing new storage metadata (version 19) to metadata1
+2022-04-30 14:46:49.274812 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=17, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:50.169338 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 18
+2022-04-30 14:46:50.169406 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=18, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:50.169465 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 20) to metadata2
+2022-04-30 14:46:50.187947 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(2)]: Got vote from server 2 for term 18
+2022-04-30 14:46:50.188039 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(2)]: Now leader for term 18 (appending no-op at index 39282)
+2022-04-30 14:46:50.188053 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(2)]: server=3, term=18, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:50.261367 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 18 from server 1, since this server (which is in term 18) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:50.414820 Server/RaftConsensus.cc:1541 in handleRequestVote() NOTICE[3:RaftService(12)]: Rejecting RequestVote for term 19 from server 1, since this server (which is in term 18) recently heard from a leader (3). Should server 1 be shut down?
+2022-04-30 14:46:50.426865 Server/RaftConsensus.cc:2317 in appendEntries() NOTICE[3:Peer(1)]: Received AppendEntries response from server 1 in term 19 (this server's term was 18)
+2022-04-30 14:46:50.426939 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:Peer(1)]: Writing new storage metadata (version 21) to metadata1
+2022-04-30 14:46:50.432261 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=19, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:46:51.085250 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[3:startNewElection]: Running for election in term 20
+2022-04-30 14:46:51.085328 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:startNewElection]: server=3, term=20, state=CANDIDATE, leader=0, vote=3
+2022-04-30 14:46:51.085409 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[3:startNewElection]: Writing new storage metadata (version 22) to metadata2
+2022-04-30 14:46:51.108386 Server/RaftConsensus.cc:2810 in requestVote() NOTICE[3:Peer(1)]: Got vote from server 1 for term 20
+2022-04-30 14:46:51.108500 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[3:Peer(1)]: Now leader for term 20 (appending no-op at index 39312)
+2022-04-30 14:46:51.108514 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[3:Peer(1)]: server=3, term=20, state=LEADER,    leader=3, vote=3
+2022-04-30 14:46:54.235189 Server/ServerStats.cc:147 in dumpToDebugLog() NOTICE[3:StatsDumper]: ServerStats:
+server_id: 3
+addresses: "localhost:5257"
+start_at: 1651330014234928685
+end_at: 1651330014234979701
+raft {
+  current_term: 20
+  state: LEADER
+  commit_index: 39312
+  last_log_index: 39312
+  leader_id: 3
+  voted_for: 3
+  start_election_at: 9223372036854775807
+  withhold_votes_until: 9223372036854775807
+  cluster_time: 132868484033
+  cluster_time_epoch: 129742067553
+  last_snapshot_index: 0
+  last_snapshot_bytes: 0
+  log_start_index: 1
+  log_bytes: 2937599
+  last_snapshot_term: 0
+  last_snapshot_cluster_time: 0
+  num_entries_truncated: 0
+  peer {
+    server_id: 2
+    addresses: "localhost:5256"
+    old_member: true
+    new_member: false
+    staging_member: false
+    request_vote_done: false
+    have_vote: false
+    suppress_bulk_data: false
+    next_index: 39313
+    last_agree_index: 39312
+    is_caught_up: true
+    next_heartbeat_at: 1651330014345010157
+    backoff_until: 1651330011341933374
+  }
+  peer {
+    server_id: 1
+    addresses: "localhost:5255"
+    old_member: true
+    new_member: false
+    staging_member: false
+    request_vote_done: true
+    have_vote: true
+    suppress_bulk_data: false
+    next_index: 39313
+    last_agree_index: 39312
+    is_caught_up: true
+    next_heartbeat_at: 1651330014363981059
+    backoff_until: 1651330010426296164
+  }
+  peer {
+    server_id: 3
+    addresses: "localhost:5257"
+    old_member: true
+    new_member: false
+    staging_member: false
+    last_synced_index: 39312
+  }
+}
+storage {
+  num_segments: 1
+  open_segment_bytes: 2937599
+  metadata_version: 22
+  metadata_write_nanos {
+    average: 6425048.8636363633
+    count: 22
+    ewma2: 6111095.9512038231
+    ewma4: 6319007.0226431973
+    exceptional_count: 0
+    last: 6177693
+    min: 4923760
+    max: 9595175
+    sum: 141351075
+    stddev: 1209600.6858969943
+  }
+  filesystem_ops_nanos {
+    average: 4617314.2933772271
+    count: 5164
+    ewma2: 4919523.6834638249
+    ewma4: 4668276.4934774218
+    exceptional_count: 0
+    last: 6480543
+    min: 530832
+    max: 18093689
+    sum: 23843811011
+    stddev: 4941929.7402039971
+  }
+}
+state_machine {
+  snapshotting: false
+  last_applied: 39312
+  num_sessions: 0
+  num_snapshots_attempted: 0
+  num_snapshots_failed: 0
+  num_redundant_advance_version_entries: 1
+  num_rejected_advance_version_entries: 0
+  num_successful_advance_version_entries: 1
+  num_total_advance_version_entries: 2
+  min_supported_version: 1
+  max_supported_version: 2
+  running_version: 2
+  tree {
+    num_conditions_checked: 0
+    num_conditions_failed: 0
+    num_make_directory_attempted: 0
+    num_make_directory_success: 0
+    num_list_directory_attempted: 0
+    num_list_directory_success: 0
+    num_remove_directory_attempted: 0
+    num_remove_directory_parent_not_found: 0
+    num_remove_directory_target_not_found: 0
+    num_remove_directory_done: 0
+    num_remove_directory_success: 0
+    num_write_attempted: 39211
+    num_write_success: 39211
+    num_read_attempted: 0
+    num_read_success: 0
+    num_remove_file_attempted: 1
+    num_remove_file_parent_not_found: 0
+    num_remove_file_target_not_found: 0
+    num_remove_file_done: 1
+    num_remove_file_success: 1
+  }
+  num_unknown_requests: 0
+  may_snapshot_at: -7572044429996340747
+}
+
+2022-04-30 14:46:59.390936 Server/Globals.cc:46 in handleSignalEvent() NOTICE[3:evloop]: Terminated: shutting down
+2022-04-30 14:46:59.391000 Server/ServerStats.cc:199 in statsDumperMain() NOTICE[3:StatsDumper]: Shutting down
+2022-04-30 14:46:59.392477 Server/StateMachine.cc:108 in ~StateMachine() NOTICE[3:evloop]: Shutting down
+2022-04-30 14:46:59.392517 Server/RaftConsensus.cc:1122 in exit() NOTICE[3:evloop]: Shutting down
+2022-04-30 14:46:59.392534 Server/RaftConsensus.cc:218 in exit() NOTICE[3:evloop]: Flagging peer 2 to exit
+2022-04-30 14:46:59.392546 Server/RaftConsensus.cc:218 in exit() NOTICE[3:evloop]: Flagging peer 1 to exit
+2022-04-30 14:46:59.392680 Server/RaftConsensus.cc:2119 in peerThreadMain() NOTICE[3:Peer(2)]: Peer thread for server 2 exiting
+2022-04-30 14:46:59.392726 Server/RaftConsensus.cc:2021 in stateMachineUpdaterThreadMain() NOTICE[3:StateMachineUpdater]: Exiting
+2022-04-30 14:46:59.392771 Server/RaftConsensus.cc:2119 in peerThreadMain() NOTICE[3:Peer(1)]: Peer thread for server 1 exiting
+2022-04-30 14:46:59.392891 Server/StateMachine.cc:415 in applyThreadMain() NOTICE[3:StateMachine]: exiting
+2022-04-30 14:46:59.393098 Server/StateMachine.cc:117 in ~StateMachine() NOTICE[3:evloop]: Joined with threads
+2022-04-30 14:46:59.393185 Server/RaftConsensus.cc:1014 in ~RaftConsensus() NOTICE[3:evloop]: Joined with disk and timer threads
+2022-04-30 14:46:59.393199 Server/RaftConsensus.cc:1021 in ~RaftConsensus() NOTICE[3:evloop]: Peer threads have exited
+2022-04-30 14:46:59.393210 Server/RaftConsensus.cc:1028 in ~RaftConsensus() NOTICE[3:evloop]: Completed disk writes
+2022-04-30 14:46:59.393440 Storage/SegmentedLog.cc:467 in ~SegmentedLog() NOTICE[3:evloop]: Closing open segment
+2022-04-30 14:46:59.399814 Storage/SegmentedLog.cc:1167 in closeSegment() NOTICE[3:evloop]: Closing segment (was open-1, renaming to 00000000000000000001-00000000000000039312)
+2022-04-30 14:46:59.405437 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[3:evloop]: Removing unused open segment: open-2
+2022-04-30 14:46:59.405547 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[3:evloop]: Removing unused open segment: open-3
+2022-04-30 14:46:59.405595 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[3:evloop]: Removing unused open segment: open-4

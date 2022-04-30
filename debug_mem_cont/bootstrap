@@ -1,0 +1,43 @@
+2022-04-30 14:51:12.590204 Server/Main.cc:305 in main() NOTICE[48537:evloop]: Using config file logcabin-1.conf
+2022-04-30 14:51:12.590538 Server/Main.cc:341 in main() NOTICE[48537:evloop]: Config file settings:
+# begin config
+listenAddresses = localhost:5255
+serverId = 1
+# end config
+2022-04-30 14:51:12.591232 Server/Globals.cc:171 in init() NOTICE[1:evloop]: Serving on localhost:5255 (resolved to 127.0.0.1:5255)
+2022-04-30 14:51:12.591273 Server/RaftConsensus.cc:1041 in init() NOTICE[1:evloop]: My server ID is 1
+2022-04-30 14:51:12.638785 Server/RaftConsensus.cc:1053 in init() NOTICE[1:evloop]: Reading the log
+2022-04-30 14:51:12.643882 Storage/SegmentedLog.cc:902 in readMetadata() WARNING[1:evloop]: Error reading metadata from metadata1: Could not open storage/server1/log/Segmented-Binary/metadata1: No such file or directory
+2022-04-30 14:51:12.643952 Storage/SegmentedLog.cc:902 in readMetadata() WARNING[1:evloop]: Error reading metadata from metadata2: Could not open storage/server1/log/Segmented-Binary/metadata2: No such file or directory
+2022-04-30 14:51:12.643984 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:evloop]: Writing new storage metadata (version 1) to metadata1
+2022-04-30 14:51:12.648756 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:evloop]: Writing new storage metadata (version 2) to metadata2
+2022-04-30 14:51:12.659018 Server/RaftConsensus.cc:1077 in init() NOTICE[1:evloop]: The log contains indexes 1 through 0 (inclusive)
+2022-04-30 14:51:12.659193 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:evloop]: Writing new storage metadata (version 3) to metadata1
+2022-04-30 14:51:12.665024 Server/RaftConsensus.cc:2642 in readSnapshot() NOTICE[1:evloop]: Snapshot file not found in storage/server1/snapshot
+2022-04-30 14:51:12.665132 Server/RaftConsensus.cc:1096 in init() NOTICE[1:evloop]: No configuration, waiting to receive one.
+2022-04-30 14:51:12.665349 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[1:evloop]: server=1, term=0, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:51:12.665916 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:evloop]: Writing new storage metadata (version 4) to metadata2
+2022-04-30 14:51:12.674499 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[1:evloop]: server=1, term=1, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:51:12.677499 Server/RaftConsensus.cc:584 in setConfiguration() NOTICE[1:evloop]: Activating configuration 1:
+prev_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+}
+
+2022-04-30 14:51:12.677587 Server/Main.cc:349 in main() NOTICE[1:evloop]: Done bootstrapping configuration. Exiting.
+2022-04-30 14:51:12.677697 Server/ServerStats.cc:199 in statsDumperMain() NOTICE[1:StatsDumper]: Shutting down
+2022-04-30 14:51:12.677869 Server/StateMachine.cc:108 in ~StateMachine() NOTICE[1:evloop]: Shutting down
+2022-04-30 14:51:12.677896 Server/RaftConsensus.cc:1122 in exit() NOTICE[1:evloop]: Shutting down
+2022-04-30 14:51:12.678094 Server/RaftConsensus.cc:2021 in stateMachineUpdaterThreadMain() NOTICE[1:StateMachineUpdater]: Exiting
+2022-04-30 14:51:12.678279 Server/StateMachine.cc:415 in applyThreadMain() NOTICE[1:StateMachine]: exiting
+2022-04-30 14:51:12.678376 Server/StateMachine.cc:117 in ~StateMachine() NOTICE[1:evloop]: Joined with threads
+2022-04-30 14:51:12.678476 Server/RaftConsensus.cc:1014 in ~RaftConsensus() NOTICE[1:evloop]: Joined with disk and timer threads
+2022-04-30 14:51:12.678495 Server/RaftConsensus.cc:1021 in ~RaftConsensus() NOTICE[1:evloop]: Peer threads have exited
+2022-04-30 14:51:12.678506 Server/RaftConsensus.cc:1028 in ~RaftConsensus() NOTICE[1:evloop]: Completed disk writes
+2022-04-30 14:51:12.678537 Storage/SegmentedLog.cc:467 in ~SegmentedLog() NOTICE[1:evloop]: Closing open segment
+2022-04-30 14:51:12.686017 Storage/SegmentedLog.cc:1167 in closeSegment() NOTICE[1:evloop]: Closing segment (was open-1, renaming to 00000000000000000001-00000000000000000001)
+2022-04-30 14:51:12.695916 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[1:evloop]: Removing unused open segment: open-2
+2022-04-30 14:51:12.696112 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[1:evloop]: Removing unused open segment: open-3
+2022-04-30 14:51:12.696178 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[1:evloop]: Removing unused open segment: open-4

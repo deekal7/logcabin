@@ -1,0 +1,395 @@
+2022-04-30 14:51:22.601876 Server/Main.cc:305 in main() NOTICE[48680:evloop]: Using config file logcabin-1.conf
+2022-04-30 14:51:22.602176 Server/Main.cc:341 in main() NOTICE[48680:evloop]: Config file settings:
+# begin config
+listenAddresses = localhost:5255
+serverId = 1
+# end config
+2022-04-30 14:51:22.602779 Server/Globals.cc:171 in init() NOTICE[1:evloop]: Serving on localhost:5255 (resolved to 127.0.0.1:5255)
+2022-04-30 14:51:22.602811 Server/RaftConsensus.cc:1041 in init() NOTICE[1:evloop]: My server ID is 1
+2022-04-30 14:51:22.602876 Server/RaftConsensus.cc:1053 in init() NOTICE[1:evloop]: Reading the log
+2022-04-30 14:51:22.603032 Storage/SegmentedLog.cc:897 in readMetadata() NOTICE[1:evloop]: Read metadata version 3 from metadata1
+2022-04-30 14:51:22.603072 Storage/SegmentedLog.cc:897 in readMetadata() NOTICE[1:evloop]: Read metadata version 4 from metadata2
+2022-04-30 14:51:22.603086 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:evloop]: Writing new storage metadata (version 5) to metadata1
+2022-04-30 14:51:22.615627 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:evloop]: Writing new storage metadata (version 6) to metadata2
+2022-04-30 14:51:22.626133 Server/RaftConsensus.cc:584 in setConfiguration() NOTICE[1:evloop]: Activating configuration 1:
+prev_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+}
+
+2022-04-30 14:51:22.626208 Server/RaftConsensus.cc:1077 in init() NOTICE[1:evloop]: The log contains indexes 1 through 1 (inclusive)
+2022-04-30 14:51:22.626227 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:evloop]: Writing new storage metadata (version 7) to metadata1
+2022-04-30 14:51:22.631614 Server/RaftConsensus.cc:2642 in readSnapshot() NOTICE[1:evloop]: Snapshot file not found in storage/server1/snapshot
+2022-04-30 14:51:22.632073 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[1:evloop]: server=1, term=1, state=FOLLOWER,  leader=0, vote=0
+2022-04-30 14:51:22.632643 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:SnapshotStateMachine]: Have applied 0% of the 1 total log entries
+2022-04-30 14:51:23.297093 Server/RaftConsensus.cc:2884 in startNewElection() NOTICE[1:startNewElection]: Running for election in term 2
+2022-04-30 14:51:23.297243 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[1:startNewElection]: server=1, term=2, state=CANDIDATE, leader=0, vote=1
+2022-04-30 14:51:23.297338 Storage/SegmentedLog.cc:776 in updateMetadata() NOTICE[1:startNewElection]: Writing new storage metadata (version 8) to metadata2
+2022-04-30 14:51:23.303385 Server/RaftConsensus.cc:2496 in becomeLeader() NOTICE[1:startNewElection]: Now leader for term 2 (appending no-op at index 2)
+2022-04-30 14:51:23.303447 Server/RaftConsensus.cc:2849 in printElectionState() NOTICE[1:startNewElection]: server=1, term=2, state=LEADER,    leader=1, vote=1
+2022-04-30 14:51:23.303605 Server/RaftConsensus.cc:1971 in stateMachineUpdaterThreadMain() NOTICE[1:StateMachineUpdater]: Appending log entry to advance state machine version to 2 (it may be set to 2 already, but it's hard to check that and not much overhead to just do it again)
+2022-04-30 14:51:23.306150 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 33% of the 3 total log entries
+2022-04-30 14:51:23.306215 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 66% of the 3 total log entries
+2022-04-30 14:51:23.306244 Server/StateMachine.cc:366 in apply() NOTICE[1:StateMachine]: Upgrading state machine to version 2 (from 1)
+2022-04-30 14:52:02.754804 Server/RaftConsensus.cc:1625 in setConfiguration() NOTICE[1:ClientService(11)]: Attempting to change the configuration from 1
+2022-04-30 14:52:02.754881 Server/RaftConsensus.cc:1633 in setConfiguration() NOTICE[1:ClientService(11)]: Adding server 1 at localhost:5255 to staging servers
+2022-04-30 14:52:02.754894 Server/RaftConsensus.cc:1633 in setConfiguration() NOTICE[1:ClientService(11)]: Adding server 2 at localhost:5256 to staging servers
+2022-04-30 14:52:02.754903 Server/RaftConsensus.cc:1633 in setConfiguration() NOTICE[1:ClientService(11)]: Adding server 3 at localhost:5257 to staging servers
+2022-04-30 14:52:02.754952 Server/RaftConsensus.cc:318 in startThread() NOTICE[1:ClientService(11)]: Starting peer thread for server 2
+2022-04-30 14:52:02.755173 Server/RaftConsensus.cc:318 in startThread() NOTICE[1:ClientService(11)]: Starting peer thread for server 3
+2022-04-30 14:52:02.755392 Server/RaftConsensus.cc:2074 in peerThreadMain() NOTICE[1:Peer(3)]: Peer thread for server 3 started
+2022-04-30 14:52:02.755527 Server/RaftConsensus.cc:2010 in stateMachineUpdaterThreadMain() NOTICE[1:StateMachineUpdater]: Waiting to receive state machine supported version information from all peers (missing 2 of 3)
+2022-04-30 14:52:02.755635 Server/RaftConsensus.cc:2074 in peerThreadMain() NOTICE[1:Peer(2)]: Peer thread for server 2 started
+2022-04-30 14:52:02.775534 Server/RaftConsensus.cc:1655 in setConfiguration() NOTICE[1:ClientService(11)]: Done catching up servers
+2022-04-30 14:52:02.775587 Server/RaftConsensus.cc:1678 in setConfiguration() NOTICE[1:ClientService(11)]: Writing transitional configuration entry
+2022-04-30 14:52:02.775715 Server/RaftConsensus.cc:584 in setConfiguration() NOTICE[1:ClientService(11)]: Activating configuration 4:
+prev_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+}
+next_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+  servers {
+    server_id: 2
+    addresses: "localhost:5256"
+  }
+  servers {
+    server_id: 3
+    addresses: "localhost:5257"
+  }
+}
+
+2022-04-30 14:52:02.781398 Server/RaftConsensus.cc:584 in setConfiguration() NOTICE[1:Peer(3)]: Activating configuration 5:
+prev_configuration {
+  servers {
+    server_id: 1
+    addresses: "localhost:5255"
+  }
+  servers {
+    server_id: 2
+    addresses: "localhost:5256"
+  }
+  servers {
+    server_id: 3
+    addresses: "localhost:5257"
+  }
+}
+
+2022-04-30 14:52:02.781617 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 80% of the 5 total log entries
+2022-04-30 14:52:02.781721 Server/RaftConsensus.cc:1708 in setConfiguration() NOTICE[1:ClientService(11)]: Waiting for stable configuration to commit
+2022-04-30 14:52:02.786642 Server/RaftConsensus.cc:1715 in setConfiguration() NOTICE[1:ClientService(11)]: Stable configuration committed. Configuration change completed successfully
+2022-04-30 14:52:22.602841 Server/ServerStats.cc:147 in dumpToDebugLog() NOTICE[1:StatsDumper]: ServerStats:
+server_id: 1
+addresses: "localhost:5255"
+start_at: 1651330342602121956
+end_at: 1651330342602191567
+raft {
+  current_term: 2
+  state: LEADER
+  commit_index: 5
+  last_log_index: 5
+  leader_id: 1
+  voted_for: 1
+  start_election_at: 9223372036854775807
+  withhold_votes_until: 9223372036854775807
+  cluster_time: 59298686547
+  cluster_time_epoch: 39477835096
+  last_snapshot_index: 0
+  last_snapshot_bytes: 0
+  log_start_index: 1
+  log_bytes: 350
+  last_snapshot_term: 0
+  last_snapshot_cluster_time: 0
+  num_entries_truncated: 0
+  peer {
+    server_id: 3
+    addresses: "localhost:5257"
+    old_member: true
+    new_member: false
+    staging_member: false
+    request_vote_done: false
+    have_vote: false
+    suppress_bulk_data: false
+    next_index: 6
+    last_agree_index: 5
+    is_caught_up: true
+    next_heartbeat_at: 1651330342800639950
+    backoff_until: -7572044429996340757
+  }
+  peer {
+    server_id: 2
+    addresses: "localhost:5256"
+    old_member: true
+    new_member: false
+    staging_member: false
+    request_vote_done: false
+    have_vote: false
+    suppress_bulk_data: false
+    next_index: 6
+    last_agree_index: 5
+    is_caught_up: true
+    next_heartbeat_at: 1651330342800559889
+    backoff_until: -7572044429996340757
+  }
+  peer {
+    server_id: 1
+    addresses: "localhost:5255"
+    old_member: true
+    new_member: false
+    staging_member: false
+    last_synced_index: 5
+  }
+}
+storage {
+  num_segments: 2
+  open_segment_bytes: 294
+  metadata_version: 8
+  metadata_write_nanos {
+    average: 7166075.75
+    count: 4
+    ewma2: 6484583
+    ewma4: 8447798.5625
+    exceptional_count: 0
+    last: 6008429
+    min: 4965458
+    max: 12503342
+    sum: 28664303
+    stddev: 3105870.3864332759
+  }
+  filesystem_ops_nanos {
+    average: 2305180.3333333335
+    count: 3
+    ewma2: 2311330
+    ewma4: 2228365.875
+    exceptional_count: 0
+    last: 2329779
+    min: 2096242
+    max: 2489520
+    sum: 6915541
+    stddev: 161494.51409120855
+  }
+}
+state_machine {
+  snapshotting: false
+  last_applied: 5
+  num_sessions: 0
+  num_snapshots_attempted: 0
+  num_snapshots_failed: 0
+  num_redundant_advance_version_entries: 0
+  num_rejected_advance_version_entries: 0
+  num_successful_advance_version_entries: 1
+  num_total_advance_version_entries: 1
+  min_supported_version: 1
+  max_supported_version: 2
+  running_version: 2
+  tree {
+    num_conditions_checked: 0
+    num_conditions_failed: 0
+    num_make_directory_attempted: 0
+    num_make_directory_success: 0
+    num_list_directory_attempted: 0
+    num_list_directory_success: 0
+    num_remove_directory_attempted: 0
+    num_remove_directory_parent_not_found: 0
+    num_remove_directory_target_not_found: 0
+    num_remove_directory_done: 0
+    num_remove_directory_success: 0
+    num_write_attempted: 0
+    num_write_success: 0
+    num_read_attempted: 0
+    num_read_success: 0
+    num_remove_file_attempted: 0
+    num_remove_file_parent_not_found: 0
+    num_remove_file_target_not_found: 0
+    num_remove_file_done: 0
+    num_remove_file_success: 0
+  }
+  num_unknown_requests: 0
+  may_snapshot_at: -7572044429996340747
+}
+
+2022-04-30 14:53:07.764071 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 41% of the 24 total log entries
+2022-04-30 14:53:07.764375 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 52% of the 25 total log entries
+2022-04-30 14:53:07.764444 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 60% of the 25 total log entries
+2022-04-30 14:53:07.764507 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 72% of the 25 total log entries
+2022-04-30 14:53:07.764562 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 80% of the 25 total log entries
+2022-04-30 14:53:07.764622 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 92% of the 25 total log entries
+2022-04-30 14:53:07.768643 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 61% of the 39 total log entries
+2022-04-30 14:53:07.774616 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 71% of the 42 total log entries
+2022-04-30 14:53:07.774755 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 80% of the 42 total log entries
+2022-04-30 14:53:07.776529 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 70% of the 50 total log entries
+2022-04-30 14:53:07.784029 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 81% of the 58 total log entries
+2022-04-30 14:53:07.786203 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 80% of the 65 total log entries
+2022-04-30 14:53:07.789172 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 80% of the 72 total log entries
+2022-04-30 14:53:07.799637 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 81% of the 74 total log entries
+2022-04-30 14:53:07.799818 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 74 total log entries
+2022-04-30 14:53:07.810501 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 94 total log entries
+2022-04-30 14:53:07.819025 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 111 total log entries
+2022-04-30 14:53:07.822835 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 122 total log entries
+2022-04-30 14:53:07.833947 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 131 total log entries
+2022-04-30 14:53:07.836155 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 140 total log entries
+2022-04-30 14:53:07.838303 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 142 total log entries
+2022-04-30 14:53:07.838555 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 143 total log entries
+2022-04-30 14:53:07.840369 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 145 total log entries
+2022-04-30 14:53:07.842399 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 147 total log entries
+2022-04-30 14:53:07.843002 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 149 total log entries
+2022-04-30 14:53:07.845519 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 156 total log entries
+2022-04-30 14:53:07.846385 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 157 total log entries
+2022-04-30 14:53:07.851084 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 158 total log entries
+2022-04-30 14:53:07.851387 Server/StateMachine.cc:606 in shouldTakeSnapshot() NOTICE[1:StateMachine]: Have applied 90% of the 159 total log entries
+2022-04-30 14:53:22.603282 Server/ServerStats.cc:147 in dumpToDebugLog() NOTICE[1:StatsDumper]: ServerStats:
+server_id: 1
+addresses: "localhost:5255"
+start_at: 1651330402602989523
+end_at: 1651330402603039476
+raft {
+  current_term: 2
+  state: LEADER
+  commit_index: 24634
+  last_log_index: 24650
+  leader_id: 1
+  voted_for: 1
+  start_election_at: 9223372036854775807
+  withhold_votes_until: 9223372036854775807
+  cluster_time: 119299552130
+  cluster_time_epoch: 119296916268
+  last_snapshot_index: 0
+  last_snapshot_bytes: 0
+  log_start_index: 1
+  log_bytes: 1823761
+  last_snapshot_term: 0
+  last_snapshot_cluster_time: 0
+  num_entries_truncated: 0
+  peer {
+    server_id: 3
+    addresses: "localhost:5257"
+    old_member: true
+    new_member: false
+    staging_member: false
+    request_vote_done: false
+    have_vote: false
+    suppress_bulk_data: false
+    next_index: 24626
+    last_agree_index: 24625
+    is_caught_up: true
+    next_heartbeat_at: 1651330402842999994
+    backoff_until: -7572044429996340737
+  }
+  peer {
+    server_id: 2
+    addresses: "localhost:5256"
+    old_member: true
+    new_member: false
+    staging_member: false
+    request_vote_done: false
+    have_vote: false
+    suppress_bulk_data: false
+    next_index: 24635
+    last_agree_index: 24634
+    is_caught_up: true
+    next_heartbeat_at: 1651330402844871560
+    backoff_until: -7572044429996340737
+  }
+  peer {
+    server_id: 1
+    addresses: "localhost:5255"
+    old_member: true
+    new_member: false
+    staging_member: false
+    last_synced_index: 24634
+  }
+}
+storage {
+  num_segments: 2
+  open_segment_bytes: 1823705
+  metadata_version: 8
+  metadata_write_nanos {
+    average: 7166075.75
+    count: 4
+    ewma2: 6484583
+    ewma4: 8447798.5625
+    exceptional_count: 0
+    last: 6008429
+    min: 4965458
+    max: 12503342
+    sum: 28664303
+    stddev: 3105870.3864332759
+  }
+  filesystem_ops_nanos {
+    average: 4777305.8431825684
+    count: 3029
+    ewma2: 4129901.2964280425
+    ewma4: 4128384.3799329787
+    exceptional_count: 0
+    last: 4307263
+    min: 588355
+    max: 23622384
+    sum: 14470459399
+    stddev: 5143958.4092345024
+  }
+}
+state_machine {
+  snapshotting: false
+  last_applied: 24634
+  num_sessions: 1
+  num_snapshots_attempted: 0
+  num_snapshots_failed: 0
+  num_redundant_advance_version_entries: 0
+  num_rejected_advance_version_entries: 0
+  num_successful_advance_version_entries: 1
+  num_total_advance_version_entries: 1
+  min_supported_version: 1
+  max_supported_version: 2
+  running_version: 2
+  tree {
+    num_conditions_checked: 0
+    num_conditions_failed: 0
+    num_make_directory_attempted: 0
+    num_make_directory_success: 0
+    num_list_directory_attempted: 0
+    num_list_directory_success: 0
+    num_remove_directory_attempted: 0
+    num_remove_directory_parent_not_found: 0
+    num_remove_directory_target_not_found: 0
+    num_remove_directory_done: 0
+    num_remove_directory_success: 0
+    num_write_attempted: 24628
+    num_write_success: 24628
+    num_read_attempted: 0
+    num_read_success: 0
+    num_remove_file_attempted: 0
+    num_remove_file_parent_not_found: 0
+    num_remove_file_target_not_found: 0
+    num_remove_file_done: 0
+    num_remove_file_success: 0
+  }
+  num_unknown_requests: 0
+  may_snapshot_at: -7572044429996340757
+}
+
+2022-04-30 14:53:47.784946 Server/Globals.cc:46 in handleSignalEvent() NOTICE[1:evloop]: Terminated: shutting down
+2022-04-30 14:53:47.786418 Server/ServerStats.cc:199 in statsDumperMain() NOTICE[1:StatsDumper]: Shutting down
+2022-04-30 14:53:47.789598 Server/StateMachine.cc:108 in ~StateMachine() NOTICE[1:evloop]: Shutting down
+2022-04-30 14:53:47.789655 Server/RaftConsensus.cc:1122 in exit() NOTICE[1:evloop]: Shutting down
+2022-04-30 14:53:47.789673 Server/RaftConsensus.cc:218 in exit() NOTICE[1:evloop]: Flagging peer 3 to exit
+2022-04-30 14:53:47.789683 Server/RaftConsensus.cc:218 in exit() NOTICE[1:evloop]: Flagging peer 2 to exit
+2022-04-30 14:53:47.789736 Server/RaftConsensus.cc:2119 in peerThreadMain() NOTICE[1:Peer(3)]: Peer thread for server 3 exiting
+2022-04-30 14:53:47.789852 Server/StateMachine.cc:415 in applyThreadMain() NOTICE[1:StateMachine]: exiting
+2022-04-30 14:53:47.789849 Server/RaftConsensus.cc:2021 in stateMachineUpdaterThreadMain() NOTICE[1:StateMachineUpdater]: Exiting
+2022-04-30 14:53:47.789949 Server/RaftConsensus.cc:2119 in peerThreadMain() NOTICE[1:Peer(2)]: Peer thread for server 2 exiting
+2022-04-30 14:53:47.790056 Server/StateMachine.cc:117 in ~StateMachine() NOTICE[1:evloop]: Joined with threads
+2022-04-30 14:53:47.794338 Server/RaftConsensus.cc:1014 in ~RaftConsensus() NOTICE[1:evloop]: Joined with disk and timer threads
+2022-04-30 14:53:47.794388 Server/RaftConsensus.cc:1021 in ~RaftConsensus() NOTICE[1:evloop]: Peer threads have exited
+2022-04-30 14:53:47.794400 Server/RaftConsensus.cc:1028 in ~RaftConsensus() NOTICE[1:evloop]: Completed disk writes
+2022-04-30 14:53:47.794600 Storage/SegmentedLog.cc:467 in ~SegmentedLog() NOTICE[1:evloop]: Closing open segment
+2022-04-30 14:53:47.800688 Storage/SegmentedLog.cc:1167 in closeSegment() NOTICE[1:evloop]: Closing segment (was open-1, renaming to 00000000000000000002-00000000000000049359)
+2022-04-30 14:53:47.812703 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[1:evloop]: Removing unused open segment: open-2
+2022-04-30 14:53:47.813108 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[1:evloop]: Removing unused open segment: open-3
+2022-04-30 14:53:47.813170 Storage/SegmentedLog.cc:477 in ~SegmentedLog() NOTICE[1:evloop]: Removing unused open segment: open-4
